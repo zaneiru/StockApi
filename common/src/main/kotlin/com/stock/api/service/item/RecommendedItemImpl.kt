@@ -8,7 +8,9 @@ import com.stock.api.model.enums.AdminConfig
 import com.stock.api.model.enums.MemberStatus
 import com.stock.api.model.enums.UserConfig
 import com.stock.api.model.item.RecommendedItemCommentRequest
+import com.stock.api.model.item.RecommendedItemCommentResponse
 import com.stock.api.model.item.toRecommendedItemComment
+import com.stock.api.model.item.toRecommendedItemCommentResponse
 import com.stock.api.repository.items.RecommendedItemCommentRepository
 import com.stock.api.repository.items.RecommendedItemRepository
 import com.stock.api.service.member.MemberService
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import kotlin.streams.toList
 
 @Service
 class RecommendedItemImpl(
@@ -41,8 +44,21 @@ class RecommendedItemImpl(
             ?: throw StockException(ErrorMessage.RECOMMENDED_ITEM_NOT_EXIST)
     }
 
+    @Transactional(readOnly = true)
+    override fun getRecommendedItemComments(recommendedItemId: Long, pageable: Pageable): Page<RecommendedItemComment> {
+        return commentRepository.findByRecommendedItemIdAndUserConfigAndAdminConfigOrderByLastModifiedDateDesc(
+            recommendedItemId,
+            UserConfig.ON,
+            AdminConfig.ON,
+            pageable
+        )
+    }
+
     @Transactional
-    override fun createRecommendedItemComment(headers: Map<String, String>, request: RecommendedItemCommentRequest): RecommendedItemComment {
+    override fun createRecommendedItemComment(
+        headers: Map<String, String>,
+        request: RecommendedItemCommentRequest
+    ): RecommendedItemComment {
 
         val uuid = headers[HEADER_UUID]
         val ip = headers[HEADER_IP]
@@ -60,7 +76,11 @@ class RecommendedItemImpl(
     }
 
     @Transactional
-    override fun updateRecommendedItemComment(headers: Map<String, String>, id: Long, request: RecommendedItemCommentRequest): RecommendedItemComment {
+    override fun updateRecommendedItemComment(
+        headers: Map<String, String>,
+        id: Long,
+        request: RecommendedItemCommentRequest
+    ): RecommendedItemComment {
 
         val uuid = headers[HEADER_UUID]
         val ip = headers[HEADER_IP]
@@ -72,7 +92,7 @@ class RecommendedItemImpl(
             // 코멘트 길이 validation 추가
         )
 
-        val createdComment= commentRepository.findByIdAndUserConfigAndAdminConfig(id, UserConfig.ON, AdminConfig.ON)
+        val createdComment = commentRepository.findByIdAndUserConfigAndAdminConfig(id, UserConfig.ON, AdminConfig.ON)
             ?: throw StockException(ErrorMessage.COMMENT_NOT_EXIST)
 
         val updateComment = createdComment.apply {

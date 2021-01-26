@@ -18,6 +18,7 @@ import javax.persistence.FetchType
 import javax.persistence.Inheritance
 import javax.persistence.InheritanceType
 import javax.persistence.OneToMany
+import javax.persistence.OrderBy
 
 @Entity
 @DynamicInsert
@@ -52,6 +53,7 @@ class RecommendedItem(
     val adminConfig: AdminConfig,
 
     @ToStringExclude
+    @OrderBy("last_modified_date DESC")
     @OneToMany(mappedBy = "recommendedItem", fetch = FetchType.EAGER, orphanRemoval = true)
     @JsonManagedReference
     val recommendedItemComments: List<RecommendedItemComment>? = mutableListOf(),

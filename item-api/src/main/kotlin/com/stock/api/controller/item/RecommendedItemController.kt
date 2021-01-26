@@ -2,6 +2,7 @@ package com.stock.api.controller.item
 
 import com.stock.api.controller.item.RecommendedItemController.Companion.BASE_URI
 import com.stock.api.entity.item.RecommendedItem
+import com.stock.api.entity.item.RecommendedItemComment
 import com.stock.api.model.item.RecommendedItemCommentRequest
 import com.stock.api.model.item.RecommendedItemCommentResponse
 import com.stock.api.model.item.RecommendedItemResponse
@@ -48,12 +49,14 @@ class RecommendedItemController(val service: RecommendedItemService) {
     }
 
     @ApiOperation("테마추천 코멘트 목록 조회")
-    @GetMapping("/comments")
-    fun getRecommendedItemComments(@RequestHeader headers: Map<String, String>,
-                                   @RequestParam recommendedItemId: Long) {
-
+    @GetMapping("/{id}/comments")
+    fun getRecommendedItemComments(@PathVariable("id") recommendedItemId: Long,
+                                   pageable: Pageable): Mono<Page<RecommendedItemCommentResponse>> {
+        val items = service.getRecommendedItemComments(recommendedItemId, pageable)
+        return Mono.just(items.map(RecommendedItemComment::toRecommendedItemCommentResponse))
     }
 
+    // TODO : API 경로 변경 /comments -> /{id}/comments
     @ApiOperation("테마추천 코멘트 등록")
     @PostMapping("/comments")
     fun createRecommendedItemComment(@RequestHeader headers: Map<String, String>,
@@ -64,6 +67,7 @@ class RecommendedItemController(val service: RecommendedItemService) {
         return Mono.just(item.toRecommendedItemCommentResponse())
     }
 
+    // TODO : API 경로 변경 /comments -> /{recommendedItemId}/comments/{id}
     @ApiOperation("테마추천 코멘트 수정")
     @PutMapping("/comments/{id}")
     fun updateRecommendedItemComment(@RequestHeader headers: Map<String, String>,
@@ -76,6 +80,7 @@ class RecommendedItemController(val service: RecommendedItemService) {
         return Mono.just(item.toRecommendedItemCommentResponse())
     }
 
+    // TODO : API 경로 변경 /comments -> /{recommendedItemId}/comments/{id}
     @ApiOperation("테마추천 코멘트 삭제")
     @DeleteMapping("/comments/{id}")
     fun deleteRecommendedItemComment(@RequestHeader headers: Map<String, String>, @PathVariable id: Long) {

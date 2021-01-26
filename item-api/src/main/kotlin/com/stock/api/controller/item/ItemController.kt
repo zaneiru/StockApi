@@ -18,8 +18,6 @@ class ItemController(private val itemService: ItemService) {
     companion object {
         const val BASE_URI: String = "/api/v1/items"
     }
-
-
 }
 
 
