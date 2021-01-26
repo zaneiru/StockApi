@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 
@@ -46,6 +47,13 @@ class RecommendedItemController(val service: RecommendedItemService) {
         return item.recommendedItemComments?.let { item.toRecommendedItemResponse(it) }?.let { Mono.just(it) }
     }
 
+    @ApiOperation("테마추천 코멘트 목록 조회")
+    @GetMapping("/comments")
+    fun getRecommendedItemComments(@RequestHeader headers: Map<String, String>,
+                                   @RequestParam recommendedItemId: Long) {
+
+    }
+
     @ApiOperation("테마추천 코멘트 등록")
     @PostMapping("/comments")
     fun createRecommendedItemComment(@RequestHeader headers: Map<String, String>,
@@ -69,7 +77,7 @@ class RecommendedItemController(val service: RecommendedItemService) {
     }
 
     @ApiOperation("테마추천 코멘트 삭제")
-    @DeleteMapping("/comments//{id}")
+    @DeleteMapping("/comments/{id}")
     fun deleteRecommendedItemComment(@RequestHeader headers: Map<String, String>, @PathVariable id: Long) {
 
         val uuid : String? = headers["uuid"]
