@@ -1,0 +1,13 @@
+spring:
+  profiles: local
+server:
+  port: 8089
+#logging:
+#  config: classpath:logback-spring.xml
+---
+spring:
+  profiles: production
+server:
+  port: 8080
+#logging:
+#  config: classpath:logback-spring.xml
