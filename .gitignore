@@ -1,12 +1,12 @@
 .gradle
 .idea
-build
 *.class
 *~
 .DS_Store
 .springBeans
 *.iml
 target
+build
 common/src/main/generated
 out
 classes

@@ -7,5 +7,5 @@ import org.springframework.data.domain.Pageable
 interface ReportService {
 
     fun getReports(pageable: Pageable): Page<Report>
-    fun getReport(id: Long): Report?
+    fun getReport(id: Long): Report
 }
