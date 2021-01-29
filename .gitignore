@@ -3,3 +3,4 @@
 build
 common/build
 item-api/build
+member-api/build
