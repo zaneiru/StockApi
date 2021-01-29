@@ -6,16 +6,11 @@ import com.stock.api.model.member.MemberResponse
 import com.stock.api.model.member.toMemberResponse
 
 data class RecommendedItemCommentResponse (
-
     val id: Long?,
-
     val comment: String?,
-
     val userConfig: String,
-
     @JsonProperty("member")
     val memberResponse: MemberResponse,
-
     val lastModifiedDate: String
 )
 

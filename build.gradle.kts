@@ -45,8 +45,8 @@ subprojects {
     apply(plugin = "idea")
     apply(plugin = "war")
     apply(plugin = "application")
-    //apply(plugin = "kotlin-kapt")
     apply(plugin = "kotlin") // 요부분을 apply { plugin("kotlin")} -> apply(plugin="kotlin")
+    apply(plugin = "kotlin-kapt")
     apply(plugin = "kotlin-jpa")
     apply(plugin = "kotlin-spring")
     apply(plugin = "kotlin-noarg")
@@ -95,6 +95,15 @@ subprojects {
         implementation("redis.clients:jedis")
 
         implementation("au.com.console:kassava:2.1.0")
+
+        // kotlin jpa specification
+        implementation("au.com.console:kotlin-jpa-specification-dsl:2.0.0")
+        implementation("com.querydsl:querydsl-jpa:4.2.1")
+        kapt("com.querydsl:querydsl-apt:4.2.1:jpa")
+
+
+
+
         //implementation("org.jetbrains.kotlin.plugin.noarg:org.jetbrains.kotlin.plugin.noarg.gradle.plugin:1.3.61")
 //
 //        // Spring boot reactive Redis
@@ -127,6 +136,10 @@ project("common") {
     dependencies {
         implementation("org.springframework.data:spring-data-commons")
         runtimeOnly("com.h2database:h2")
+
+
+
+
     }
 
     val jar: Jar by tasks
@@ -134,6 +147,10 @@ project("common") {
 
     bootJar.enabled = false
     jar.enabled = true
+}
+
+sourceSets["main"].withConvention(org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet::class) {
+    kotlin.srcDir("$buildDir/generated/source/kapt/main")
 }
 
 project(":member-api") {
@@ -182,6 +199,7 @@ project(":item-api") {
         implementation("io.springfox:springfox-swagger-ui:3.0.0")
         implementation("org.springdoc:springdoc-openapi-webflux-ui:1.3.4")
         implementation("org.springdoc:springdoc-openapi-kotlin:1.3.4")
+
     }
 }
 

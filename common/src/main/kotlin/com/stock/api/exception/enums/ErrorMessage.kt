@@ -12,15 +12,20 @@ enum class ErrorMessage(private val errorCodeParam: Int, private val messagePara
     // 200000 ~ 209999 : 추천 테마
     RECOMMENDED_ITEM_NOT_EXIST(200000, "테마 추천 정보가 존재하지 않습니다."),
 
+
+    // 230000 ~ 239999 : 증권사 리포트
+    REPORT_NOT_EXISTS(230001, "증권사 리포트가 존재하지 않습니다."),
+
     // 950000 ~ 959999 : 공통
     PARAM_EMAIL_EMPTY(950000, "이메일을 요청해야 합니다."),
     PARAM_KAKAO_NUMBER_EMPTY(950100, "카카오 계정 번호를 요청해야 합니다."),
 
     // 950100 ~ 950199 : 코멘트
-    COMMENT_ID_NOT_VALID(950100, "코멘트 정보[ID]가 유효하지 않습니다."),
-    COMMENT_MEMBER_NOT_VALID(950101, "코멘트 작성자 정보가 유효하지 않습니다."),
+    COMMENT_ID_NOT_VALID(950100, "댓글 정보[ID]가 유효하지 않습니다."),
+    COMMENT_MEMBER_NOT_VALID(950101, "댓글 작성자 정보가 유효하지 않습니다."),
     COMMENT_NOT_OWNER(950102, "본인이 작성한 댓글이 아닙니다."),
     COMMENT_NOT_EXIST(950103, "댓글이 존재하지 않습니다."),
+    COMMENT_NOT_DELETE_OR_UPDATE_BY_MEMBER_STATUS_NOT_NORMAL(950104, "정지상태의 회원은 댓글 수정 및 삭제가 불가능합니다."),
 
     ETC_BAD_REQUEST(90001, "잘못된 요청입니다."),
     ETC_INTERNAL_ERROR(90002, "내부 오류입니다."),

@@ -38,10 +38,16 @@ class RecommendedItemImpl(
         return repository.findByAdminConfigOrderByLastModifiedDateDesc(AdminConfig.ON, pageable)
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     override fun getRecommendedItem(id: Long): RecommendedItem {
-        return repository.findByIdAndAdminConfig(id, AdminConfig.ON)
+        val item = repository.findByIdAndAdminConfig(id, AdminConfig.ON)
             ?: throw StockException(ErrorMessage.RECOMMENDED_ITEM_NOT_EXIST)
+
+        item.apply {
+            viewCount += 1
+        }
+
+        return repository.save(item)
     }
 
     @Transactional(readOnly = true)
@@ -78,6 +84,7 @@ class RecommendedItemImpl(
     @Transactional
     override fun updateRecommendedItemComment(
         headers: Map<String, String>,
+        recommendedItemId: Long,
         id: Long,
         request: RecommendedItemCommentRequest
     ): RecommendedItemComment {
@@ -92,8 +99,8 @@ class RecommendedItemImpl(
             // 코멘트 길이 validation 추가
         )
 
-        val createdComment = commentRepository.findByIdAndUserConfigAndAdminConfig(id, UserConfig.ON, AdminConfig.ON)
-            ?: throw StockException(ErrorMessage.COMMENT_NOT_EXIST)
+        val createdComment = getRecommendedItemComment(id)
+        validate(createdComment, uuid!!)
 
         val updateComment = createdComment.apply {
             this.ip = ip
@@ -115,13 +122,8 @@ class RecommendedItemImpl(
             (uuid == null) to { throw StockException(ErrorMessage.MEMBER_UUID_IS_EMPTY) },
         )
 
-        val createdComment = commentRepository.findByIdAndUserConfigAndAdminConfig(id, UserConfig.ON, AdminConfig.ON)
-            ?: throw StockException(ErrorMessage.COMMENT_NOT_EXIST)
-
-        multiIf(
-            (createdComment.member!!.uuid != uuid) to { throw StockException(ErrorMessage.COMMENT_NOT_OWNER) },
-            (createdComment.member!!.status != MemberStatus.NORMAL) to { throw StockException(ErrorMessage.RECOMMENDED_ITEM_NOT_EXIST) }
-        )
+        val createdComment = getRecommendedItemComment(id)
+        validate(createdComment, uuid!!)
 
         val deleteComment = createdComment.apply {
             this.ip = ip
@@ -131,5 +133,16 @@ class RecommendedItemImpl(
 
         commentRepository.save(deleteComment)
     }
-}
 
+    private fun getRecommendedItemComment(id: Long): RecommendedItemComment {
+        return commentRepository.findByIdAndUserConfigAndAdminConfig(id, UserConfig.ON, AdminConfig.ON)
+            ?: throw StockException(ErrorMessage.COMMENT_NOT_EXIST)
+    }
+
+    private fun validate(createdComment: RecommendedItemComment, uuid: String) {
+        multiIf(
+            (createdComment.member!!.uuid != uuid) to { throw StockException(ErrorMessage.COMMENT_NOT_OWNER) },
+            (createdComment.member!!.status != MemberStatus.NORMAL) to { throw StockException(ErrorMessage.COMMENT_NOT_DELETE_OR_UPDATE_BY_MEMBER_STATUS_NOT_NORMAL) }
+        )
+    }
+}

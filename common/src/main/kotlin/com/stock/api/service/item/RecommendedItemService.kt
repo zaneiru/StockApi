@@ -9,14 +9,9 @@ import org.springframework.data.domain.Pageable
 interface RecommendedItemService {
 
     fun getRecommendedItems(pageable: Pageable): Page<RecommendedItem>
-
     fun getRecommendedItem(id: Long): RecommendedItem
-
     fun getRecommendedItemComments(recommendedItemId: Long, pageable: Pageable): Page<RecommendedItemComment>
-
     fun createRecommendedItemComment(headers: Map<String, String>, request: RecommendedItemCommentRequest): RecommendedItemComment
-
-    fun updateRecommendedItemComment(headers: Map<String, String>, id: Long, request: RecommendedItemCommentRequest): RecommendedItemComment
-
+    fun updateRecommendedItemComment(headers: Map<String, String>, recommendedItemId: Long, id: Long, request: RecommendedItemCommentRequest): RecommendedItemComment
     fun deleteRecommendedItemComment(headers: Map<String, String>, id: Long)
 }

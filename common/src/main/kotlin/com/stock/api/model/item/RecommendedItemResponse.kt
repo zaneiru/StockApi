@@ -7,24 +7,14 @@ import java.time.LocalDateTime
 data class RecommendedItemResponse (
 
     var id: Long,
-
     var title: String,
-
     var bannerUrl: String,
-
     var bannerMainTitle: String,
-
     var bannerSubTitle: String,
-
     var likeCount: Int,
-
     var viewCount: Int,
-
     var commentCount: Int,
-
-    var lastModifiedDate: LocalDateTime,
-
-    var comments: List<RecommendedItemCommentResponse>? = null
+    var lastModifiedDate: LocalDateTime
 )
 
 fun RecommendedItem.toRecommendedItemResponse(): RecommendedItemResponse {
@@ -38,20 +28,5 @@ fun RecommendedItem.toRecommendedItemResponse(): RecommendedItemResponse {
         viewCount = this.viewCount,
         commentCount = this.commentCount,
         lastModifiedDate = this.lastModifiedDate
-    )
-}
-
-fun RecommendedItem.toRecommendedItemResponse(recommendedItemComments: List<RecommendedItemComment>): RecommendedItemResponse {
-    return RecommendedItemResponse(
-        id = this.id!!,
-        title = this.title!!,
-        bannerUrl = this.bannerUrl!!,
-        bannerMainTitle = this.bannerMainTitle!!,
-        bannerSubTitle = this.bannerSubTitle!!,
-        likeCount = this.likeCount,
-        viewCount = this.viewCount,
-        commentCount = this.commentCount,
-        lastModifiedDate = this.lastModifiedDate,
-        comments = recommendedItemComments.map(RecommendedItemComment::toRecommendedItemCommentResponse)
     )
 }

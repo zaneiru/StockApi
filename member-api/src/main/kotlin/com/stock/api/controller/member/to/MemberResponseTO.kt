@@ -19,11 +19,11 @@ data class MemberResponseTO (
 
 fun Member.toMemberResponseTO(): MemberResponseTO {
     return MemberResponseTO(
-        uuid = this.uuid,
-        status = this.status,
-        authVendorType = this.authVendorType,
-        accountId = this.accountId,
-        email = this.email,
+        uuid = this.uuid!!,
+        status = this.status!!,
+        authVendorType = this.authVendorType!!,
+        accountId = this.accountId!!,
+        email = this.email!!,
         membershipProduct = this.membershipProduct,
         membershipStartDate = this.membershipStartDate,
         membershipEndDate = this.membershipEndDate

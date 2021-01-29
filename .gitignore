@@ -1,2 +1,5 @@
 .gradle
 .idea
+build
+common/build
+item-api/build

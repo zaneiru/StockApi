@@ -16,7 +16,7 @@ data class NoticeBoardResponseTO (
 
 fun NoticeBoard.toNoticeBoardResponseTO(): NoticeBoardResponseTO {
     return NoticeBoardResponseTO(
-        id = this.id,
+        id = this.id!!,
         noticeType = this.noticeType.toString(),
         topPosition = this.topPosition,
         title = this.title,

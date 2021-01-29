@@ -6,7 +6,7 @@ import au.com.console.kassava.kotlinToString
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.stock.api.entity.AbstractEntityBase
 import com.stock.api.model.enums.AdminConfig
-import org.apache.commons.lang3.builder.ToStringExclude
+import com.stock.api.model.enums.ReportType
 import org.hibernate.annotations.DynamicInsert
 import org.hibernate.annotations.DynamicUpdate
 import org.springframework.beans.factory.annotation.Configurable
@@ -19,69 +19,62 @@ import javax.persistence.Inheritance
 import javax.persistence.InheritanceType
 import javax.persistence.OneToMany
 import javax.persistence.OrderBy
+import au.com.console.jpaspecificationdsl.and
+import au.com.console.jpaspecificationdsl.equal
+import org.springframework.data.jpa.domain.Specification
 
 @Entity
 @DynamicInsert
 @DynamicUpdate
 @Configurable
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-class RecommendedItem(
+class Report (
 
     @Column(nullable = false)
-    val title: String?,
+    @Enumerated(EnumType.STRING)
+    val type: ReportType? = null,
 
     @Column(nullable = false)
-    val bannerUrl: String?,
+    val title: String? = null,
 
     @Column(nullable = false)
-    val bannerMainTitle: String?,
+    val contents: String? = null,
 
     @Column(nullable = false)
-    val bannerSubTitle: String?,
+    val reportDate: String? = null,
 
     @Column(nullable = false)
-    val likeCount: Int = 0,
+    val fileUrl: String? = null,
 
     @Column(nullable = false)
     var viewCount: Int = 0,
 
     @Column(nullable = false)
-    var commentCount: Int = 0,
-
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    val adminConfig: AdminConfig,
+    val adminConfig: AdminConfig = AdminConfig.OFF,
 
-    @ToStringExclude
     @OrderBy("last_modified_date DESC")
-    @OneToMany(mappedBy = "recommendedItem", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "report", fetch = FetchType.EAGER, orphanRemoval = true)
     @JsonManagedReference
-    val recommendedItemComments: List<RecommendedItemComment>? = mutableListOf(),
-
-    @ToStringExclude
-    @OneToMany(mappedBy = "recommendedItem", fetch = FetchType.LAZY, orphanRemoval = true)
-    @JsonManagedReference
-    val recommendedItemLikes: Set<RecommendedItemLike>? = mutableSetOf()
+    val reportTags: List<ReportTag>? = mutableListOf(),
 
 ): AbstractEntityBase<Long>() {
     companion object {
-        private const val serialVersionUID = 313446712923L
-        private val equalsAndHashCodeProperties = arrayOf(RecommendedItem::id)
+        private const val serialVersionUID = -911092234467923L
+        private val equalsAndHashCodeProperties = arrayOf(Report::id)
         private val toStringProperties = arrayOf(
-            RecommendedItem::title,
-            RecommendedItem::bannerUrl,
-            RecommendedItem::bannerMainTitle,
-            RecommendedItem::bannerSubTitle,
-            RecommendedItem::likeCount,
-            RecommendedItem::viewCount,
-            RecommendedItem::commentCount,
-            RecommendedItem::adminConfig,
-            RecommendedItem::recommendedItemComments,
-            RecommendedItem::recommendedItemLikes,
-            RecommendedItem::id,
-            RecommendedItem::version,
-            RecommendedItem::createdDate,
-            RecommendedItem::lastModifiedDate
+            Report::type,
+            Report::title,
+            Report::contents,
+            Report::reportDate,
+            Report::fileUrl,
+            Report::viewCount,
+            Report::adminConfig,
+            Report::reportTags,
+            Report::id,
+            Report::version,
+            Report::createdDate,
+            Report::lastModifiedDate
         )
     }
 
@@ -89,3 +82,4 @@ class RecommendedItem(
     override fun equals(other: Any?) = kotlinEquals(other = other, properties = equalsAndHashCodeProperties)
     override fun hashCode() = kotlinHashCode(properties = equalsAndHashCodeProperties)
 }
+

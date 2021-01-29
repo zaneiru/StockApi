@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 
@@ -45,7 +44,7 @@ class RecommendedItemController(val service: RecommendedItemService) {
     @GetMapping("/{id}")
     fun getRecommendedItem(@PathVariable id: Long): Mono<RecommendedItemResponse>? {
         val item = service.getRecommendedItem(id)
-        return item.recommendedItemComments?.let { item.toRecommendedItemResponse(it) }?.let { Mono.just(it) }
+        return Mono.just(item.toRecommendedItemResponse())
     }
 
     @ApiOperation("테마추천 코멘트 목록 조회")
@@ -67,15 +66,15 @@ class RecommendedItemController(val service: RecommendedItemService) {
         return Mono.just(item.toRecommendedItemCommentResponse())
     }
 
-    // TODO : API 경로 변경 /comments -> /{recommendedItemId}/comments/{id}
     @ApiOperation("테마추천 코멘트 수정")
-    @PutMapping("/comments/{id}")
+    @PutMapping("/{recommendedItemId}/comments/{id}")
     fun updateRecommendedItemComment(@RequestHeader headers: Map<String, String>,
+                                     @PathVariable recommendedItemId: Long,
                                      @PathVariable id: Long,
                                      @RequestBody recommendedItemCommentRequest: RecommendedItemCommentRequest
     ): Mono<RecommendedItemCommentResponse> {
 
-        val item = service.updateRecommendedItemComment(headers, id, recommendedItemCommentRequest)
+        val item = service.updateRecommendedItemComment(headers, recommendedItemId, id, recommendedItemCommentRequest)
 
         return Mono.just(item.toRecommendedItemCommentResponse())
     }
@@ -88,6 +87,4 @@ class RecommendedItemController(val service: RecommendedItemService) {
         val uuid : String? = headers["uuid"]
         service.deleteRecommendedItemComment(headers, id)
     }
-
-
 }
