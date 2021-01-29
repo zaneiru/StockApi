@@ -1,6 +1,12 @@
 .gradle
 .idea
+*.class
+*~
+.DS_Store
+.springBeans
+*.iml
+target
 build
-common/build
-item-api/build
-member-api/build
+common/src/main/generated
+out
+classes
