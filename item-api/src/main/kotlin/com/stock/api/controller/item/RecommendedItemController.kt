@@ -13,6 +13,8 @@ import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -35,7 +37,7 @@ class RecommendedItemController(val service: RecommendedItemService) {
 
     @ApiOperation("테마추천 목록 조회")
     @GetMapping
-    fun getRecommendedItems(pageable: Pageable): Mono<Page<RecommendedItemResponse>> {
+    fun getRecommendedItems(@PageableDefault(sort = ["createdDate"], direction = Sort.Direction.DESC) pageable: Pageable): Mono<Page<RecommendedItemResponse>> {
         val items = service.getRecommendedItems(pageable)
         return Mono.just(items.map(RecommendedItem::toRecommendedItemResponse))
     }
