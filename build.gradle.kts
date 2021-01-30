@@ -203,7 +203,6 @@ project(":item-api") {
     }
 }
 
-
 project(":news-api") {
     dependencies {
         compileOnly(project(":common"))
@@ -219,4 +218,3 @@ project(":news-api") {
         implementation("org.springdoc:springdoc-openapi-kotlin:1.3.4")
     }
 }
-
