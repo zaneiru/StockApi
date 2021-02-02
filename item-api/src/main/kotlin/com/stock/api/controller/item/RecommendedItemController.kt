@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 
-@Api(description = "추천종목 API")
+@Api(description = "테마추천 API")
 @RestController
 @RequestMapping(value = [BASE_URI])
 class RecommendedItemController(val service: RecommendedItemService) {
@@ -50,21 +50,21 @@ class RecommendedItemController(val service: RecommendedItemService) {
     }
 
     @ApiOperation("테마추천 코멘트 목록 조회")
-    @GetMapping("/{id}/comments")
-    fun getRecommendedItemComments(@PathVariable("id") recommendedItemId: Long,
+    @GetMapping("/{recommendedItemId}/comments")
+    fun getRecommendedItemComments(@PathVariable("recommendedItemId") recommendedItemId: Long,
                                    pageable: Pageable): Mono<Page<RecommendedItemCommentResponse>> {
+
         val items = service.getRecommendedItemComments(recommendedItemId, pageable)
         return Mono.just(items.map(RecommendedItemComment::toRecommendedItemCommentResponse))
     }
 
-    // TODO : API 경로 변경 /comments -> /{id}/comments
     @ApiOperation("테마추천 코멘트 등록")
-    @PostMapping("/comments")
+    @PostMapping("/{recommendedItemId}/comments")
     fun createRecommendedItemComment(@RequestHeader headers: Map<String, String>,
+                                     @PathVariable recommendedItemId: Long,
                                      @RequestBody recommendedItemCommentRequest: RecommendedItemCommentRequest): Mono<RecommendedItemCommentResponse> {
 
         val item = service.createRecommendedItemComment(headers, recommendedItemCommentRequest)
-
         return Mono.just(item.toRecommendedItemCommentResponse())
     }
 
@@ -77,16 +77,15 @@ class RecommendedItemController(val service: RecommendedItemService) {
     ): Mono<RecommendedItemCommentResponse> {
 
         val item = service.updateRecommendedItemComment(headers, recommendedItemId, id, recommendedItemCommentRequest)
-
         return Mono.just(item.toRecommendedItemCommentResponse())
     }
 
-    // TODO : API 경로 변경 /comments -> /{recommendedItemId}/comments/{id}
     @ApiOperation("테마추천 코멘트 삭제")
-    @DeleteMapping("/comments/{id}")
-    fun deleteRecommendedItemComment(@RequestHeader headers: Map<String, String>, @PathVariable id: Long) {
+    @DeleteMapping("/{recommendedItemId}/comments/{id}")
+    fun deleteRecommendedItemComment(@RequestHeader headers: Map<String, String>,
+                                     @PathVariable recommendedItemId: Long,
+                                     @PathVariable id: Long) {
 
-        val uuid : String? = headers["uuid"]
         service.deleteRecommendedItemComment(headers, id)
     }
 }
